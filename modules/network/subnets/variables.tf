@@ -16,6 +16,10 @@ variable "azs" {
 # Fixed CIDR inputs (your choice)
 variable "public_subnet_cidrs" {
   type = list(string)
+  validation {
+    condition     = length(var.public_subnet_cidrs) == length(var.azs)
+    error_message = "CIDR count must match AZ count"
+  }
 }
 
 variable "private_subnet_cidrs" {
