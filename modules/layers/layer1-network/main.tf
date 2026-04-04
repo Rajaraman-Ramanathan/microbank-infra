@@ -1,31 +1,29 @@
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 module "vpc" {
   source = "../../modules/network/vpc"
 
-  name       = "microbank-prod-vpc"
-  cidr_block = "10.0.0.0/16"
+  name       = local.name
+  cidr_block = local.cidr_block
 
-  tags = {
-    Environment = "prod"
-    Project     = "microbank"
-  }
+  tags = local.common_tags
 }
 
 module "subnets" {
   source = "../../modules/network/subnets"
 
-  name   = "microbank-prod-subnets"
+  name   = local.name
   vpc_id = module.vpc.vpc_id
 
-  azs = ["ap-south-1a", "ap-south-1b"]
+  azs = slice(data.aws_availability_zones.available.names, 0, 2)
 
-  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
-  db_subnet_cidrs      = ["10.0.21.0/24", "10.0.22.0/24"]
+  public_subnet_cidrs  = local.public_subnet_cidrs
+  private_subnet_cidrs = local.private_subnet_cidrs
+  db_subnet_cidrs      = local.db_subnet_cidrs
 
-  cluster_name = "microbank-eks"
+  cluster_name = "${local.name}-eks"
 
-  tags = {
-    Environment = "prod"
-    Project     = "microbank"
-  }
+  tags = local.common_tags
 }
