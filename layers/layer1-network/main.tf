@@ -5,7 +5,7 @@ data "aws_availability_zones" "available" {
 module "vpc" {
   source = "../../modules/network/vpc"
 
-  name       = local.name
+  name       = "${local.name}-vpc"
   cidr_block = local.cidr_block
 
   tags = local.common_tags
