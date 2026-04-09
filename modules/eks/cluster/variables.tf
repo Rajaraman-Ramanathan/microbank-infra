@@ -6,8 +6,12 @@ variable "cluster_version" {
   type = string
 }
 
-variable "subnet_ids" {
+variable "private_subnet_ids" {
   type = list(string)
+}
+
+variable "cluster_security_group_id" {
+  type = string
 }
 
 variable "cluster_role_arn" {
@@ -24,17 +28,10 @@ variable "endpoint_public_access" {
   default = false
 }
 
-variable "enabled_log_types" {
-  type = list(string)
-  default = [
-    "api",
-    "audit",
-    "authenticator",
-    "controllerManager",
-    "scheduler"
-  ]
-}
-
 variable "kms_key_arn" {
   type = string
+}
+
+variable "tags" {
+  type = map(string)
 }
