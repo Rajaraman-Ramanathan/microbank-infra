@@ -8,8 +8,6 @@ resource "aws_eks_cluster" "this" {
 
     endpoint_private_access = var.endpoint_private_access
     endpoint_public_access  = var.endpoint_public_access
-
-    # Use SG from your reusable SG module
     security_group_ids = [var.cluster_security_group_id]
   }
 
