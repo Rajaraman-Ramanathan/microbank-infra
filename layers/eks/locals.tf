@@ -26,7 +26,7 @@ locals {
       desired_size   = 3
       min_size       = 2
       max_size       = 6
-      capacity_type  = "SPOT"
+      capacity_type  = "ON_DEMAND"
       disk_size      = 100
 
       labels = {
@@ -39,6 +39,6 @@ locals {
 
   common_tags = {
     Environment = "prod"
-    Project     = "eks-platform"
+    Project     = "microbank"
   }
 }

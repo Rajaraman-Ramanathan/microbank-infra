@@ -17,7 +17,7 @@ module "node_groups" {
   cluster_name       = module.eks_cluster.cluster_name
   node_role_arn      = module.iam.node_role_arn
   private_subnet_ids = module.network.private_subnet_ids
-
-  node_groups = local.node_groups  
+  node_groups = local.node_groups
+   
   tags        = local.common_tags
 }
