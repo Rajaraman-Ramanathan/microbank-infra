@@ -63,9 +63,5 @@ resource "helm_release" "alb_controller" {
       }
     })
   ]
-
-  depends_on = [
-    var.cluster_name
-  ]
 }
 
