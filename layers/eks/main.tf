@@ -71,14 +71,15 @@ module "addons" {
   source = "../../modules/eks/addons"
 
   cluster_name        = module.eks_cluster.cluster_name
-  cluster_endpoint    = module.eks_cluster.cluster_endpoint
-  cluster_ca          = module.eks_cluster.cluster_ca
-  cluster_auth_token  = data.aws_eks_cluster_auth.this.token
 
   ebs_csi_role_arn    = module.irsa_ebs_csi.role_arn
   alb_irsa_role_arn   = module.irsa_alb.role_arn
 
   tags = local.common_tags
+
+  providers = {
+    helm = helm
+  }
 
   depends_on = [
     module.node_groups
