@@ -16,13 +16,10 @@ module "subnets" {
 
   name   = local.name
   vpc_id = module.vpc.vpc_id
-
   azs = slice(data.aws_availability_zones.available.names, 0, 2)
-
   public_subnet_cidrs  = local.public_subnet_cidrs
   private_subnet_cidrs = local.private_subnet_cidrs
   db_subnet_cidrs      = local.db_subnet_cidrs
-
   cluster_name = "${local.name}-eks"
 
   tags = local.common_tags
@@ -40,8 +37,8 @@ module "nat" {
   source = "../../modules/network/nat"
 
   public_subnet_id = module.subnets.public_subnet_ids[0]
-
   name = local.name
+
   tags = local.common_tags
 }
 
@@ -51,11 +48,23 @@ module "route_tables" {
   vpc_id = module.vpc.vpc_id
   igw_id = module.igw.igw_id
   nat_id = module.nat.nat_id
-
   public_subnet_ids  = module.subnets.public_subnet_ids
   private_subnet_ids = module.subnets.private_subnet_ids
   db_subnet_ids      = module.subnets.db_subnet_ids
-
   name = local.name
+
+  tags = local.common_tags
+}
+
+module "vpc_endpoints" {
+  source = "../../modules/networking-advanced/vpc_endpoints"
+
+  name = "microbank"
+  region = var.aws_region
+  vpc_id = module.vpc.vpc_id
+  private_subnet_ids      = module.subnets.private_subnet_ids
+  private_route_table_ids = module.route_tables.private_route_table_ids
+  private_subnet_cidrs = var.private_subnet_cidrs
+
   tags = local.common_tags
 }
