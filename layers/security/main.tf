@@ -64,3 +64,34 @@ module "guardduty" {
 
   tags = local.common_tags
 }
+
+module "security_hub" {
+  source = "../../modules/security/security_hub"
+
+  enable_default_standards = false
+  enable_org_configuration = false
+  enable_inspector = true
+  security_standards = [
+    "cis-aws-foundations-benchmark/v/1.2.0",
+    "aws-foundational-security-best-practices/v/1.0.0"
+  ]
+
+  tags = local.common_tags
+
+  depends_on = [
+    module.guardduty
+  ]
+}
+
+module "aws_config" {
+  source = "../../modules/security/aws_config"
+
+  name = "microbank-config"
+  s3_bucket_name = module.audit_bucket.bucket_id
+  s3_bucket_arn  = module.audit_bucket.bucket_arn
+  kms_key_arn = module.kms.key_arn
+  include_global_resources = true
+  delivery_frequency = "TwentyFour_Hours"
+
+  tags = local.common_tags
+}
