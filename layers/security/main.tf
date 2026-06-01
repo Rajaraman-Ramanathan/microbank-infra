@@ -95,3 +95,25 @@ module "aws_config" {
 
   tags = local.common_tags
 }
+
+module "acm" {
+  source = "../../modules/security/acm"
+
+  domain_name = "*.microbank.com"
+  hosted_zone_id = module.route53.zone_id
+  subject_alternative_names = [
+    "microbank.com"
+  ]
+
+  tags = local.common_tags
+}
+
+module "waf" {
+  source = "../../modules/security/waf"
+
+  name = "microbank-waf"
+  alb_arn = module.alb.alb_arn
+  rate_limit = 2000
+
+  tags = local.common_tags
+}
