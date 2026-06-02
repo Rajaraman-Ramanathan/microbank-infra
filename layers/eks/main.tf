@@ -72,14 +72,8 @@ module "addons" {
   source = "../../modules/eks/addons"
 
   cluster_name        = module.eks_cluster.cluster_name
-  ebs_csi_role_arn    = module.irsa_ebs_csi.role_arn
-  alb_irsa_role_arn   = module.irsa_alb.role_arn
 
   tags = local.common_tags
-
-  providers = {
-    helm = helm
-  }
 
   depends_on = [
     module.node_groups
@@ -111,26 +105,6 @@ module "irsa_alb" {
 
   policy_arns = [
     "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
-  ]
-}
-
-module "external_dns" {
-  source = "../../modules/dns/external_dns"
-
-  external_dns_role_arn = module.irsa_external_dns.role_arn
-  txt_owner_id = var.cluster_name
-
-  domain_filters = [
-    "microbank.com"
-  ]
-  zone_type = "public"
-
-  providers = {
-    helm = helm
-  }
-
-  depends_on = [
-    module.addons
   ]
 }
 
