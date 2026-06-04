@@ -19,17 +19,18 @@ variable "ingress_rules" {
     from_port   = number
     to_port     = number
     protocol    = string
-    cidr_blocks = list(string)
     description = string
+    cidr_blocks               = optional(list(string), [])
+    source_security_group_ids = optional(list(string), [])
   }))
   default = []
 
   validation {
     condition = alltrue([
       for rule in var.ingress_rules :
-      length(rule.cidr_blocks) > 0
+      length(rule.cidr_blocks) > 0 || length(rule.source_security_group_ids) > 0
     ])
-    error_message = "Each rule must have at least one CIDR block"
+    error_message = "Each rule must define at least one CIDR block or source security group."
   }
 }
 
@@ -39,21 +40,23 @@ variable "egress_rules" {
     from_port   = number
     to_port     = number
     protocol    = string
-    cidr_blocks = list(string)
     description = string
+    cidr_blocks               = optional(list(string), [])
+    source_security_group_ids = optional(list(string), [])
   }))
   default = []
 
   validation {
     condition = alltrue([
       for rule in var.egress_rules :
-      length(rule.cidr_blocks) > 0
+      length(rule.cidr_blocks) > 0 || length(rule.source_security_group_ids) > 0
     ])
-    error_message = "Each rule must have at least one CIDR block"
+    error_message = "Each rule must define at least one CIDR block or source security group."
   }
 }
 
 variable "tags" {
   description = "Tags for the security group"
-  type = map(string)
+  type        = map(string)
+  default     = {}
 }

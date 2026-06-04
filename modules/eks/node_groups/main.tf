@@ -1,4 +1,9 @@
 resource "aws_eks_node_group" "this" {
+  launch_template {
+  id      = var.launch_template_id
+  version = var.launch_template_version
+  }
+  
   for_each = var.node_groups
 
   cluster_name    = var.cluster_name

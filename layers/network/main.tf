@@ -68,3 +68,82 @@ module "vpc_endpoints" {
 
   tags = local.common_tags
 }
+
+module "eks_cluster_sg" {
+  source = "../../modules/network/security_groups"
+
+  name        = "${local.name}-eks-cluster-sg"
+  description = "EKS Control Plane Security Group"
+  vpc_id = module.vpc.vpc_id
+  ingress_rules = []
+
+  egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = [
+        "0.0.0.0/0"
+      ]
+      description = "Allow all outbound traffic"
+    }
+  ]
+
+  tags = merge(
+    local.common_tags,
+    {
+      Component = "eks-cluster-sg"
+    }
+  )
+}
+
+module "eks_node_sg" {
+  source = "../../modules/network/security_groups"
+
+  name        = "${local.name}-eks-node-sg"
+  description = "EKS Worker Node Security Group"
+  vpc_id = module.vpc.vpc_id
+  ingress_rules = [
+    {
+      from_port   = 1025
+      to_port     = 65535
+      protocol    = "tcp"
+
+      source_security_group_ids = [
+        module.eks_cluster_sg.security_group_id
+      ]
+      
+      description = "Control plane to nodes"
+    },
+    {
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "tcp"
+
+      source_security_group_ids = [
+        module.eks_node_sg.security_group_id
+      ]
+      description = "Node to node communication"
+    }
+  ]
+
+  egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+
+      cidr_blocks = [
+        "0.0.0.0/0"
+      ]
+      description = "Allow all outbound traffic"
+    }
+  ]
+
+  tags = merge(
+    local.common_tags,
+    {
+      Component = "eks-node-sg"
+    }
+  )
+}

@@ -5,7 +5,7 @@ module "eks_cluster" {
   cluster_version           = var.cluster_version
   private_subnet_ids        = module.network.private_subnet_ids
   cluster_role_arn          = module.iam.cluster_role_arn
-  cluster_security_group_id = module.security_group.cluster_sg_id
+  cluster_security_group_id = module.network.eks_cluster_sg_id
   kms_key_arn               = module.kms.key_arn
 
   tags = local.common_tags
@@ -17,6 +17,8 @@ module "node_groups" {
   cluster_name       = module.eks_cluster.cluster_name
   node_role_arn      = module.iam.node_role_arn
   private_subnet_ids = module.network.private_subnet_ids
+  launch_template_id = module.launch_template.launch_template_id
+  launch_template_version = module.launch_template.latest_version
   node_groups = local.node_groups
    
   tags        = local.common_tags
@@ -106,6 +108,15 @@ module "irsa_alb" {
   policy_arns = [
     "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
   ]
+}
+
+module "launch_template" {
+  source = "../../modules/eks/launch_template"
+
+  cluster_name = var.cluster_name
+  node_security_group_id = module.network.eks_node_sg_id
+
+  tags = local.common_tags
 }
 
 
