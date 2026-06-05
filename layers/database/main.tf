@@ -2,15 +2,38 @@ module "rds_postgres" {
   source = "../../modules/database/rds_postgres"
 
   name = "microbank-postgres"
-  vpc_id = module.network.vpc_id
-  db_subnet_ids = module.network.db_subnet_ids
-  kms_key_arn = module.kms.key_arn
+
+  vpc_id        = data.terraform_remote_state.network.outputs.vpc_id
+
+  db_subnet_ids = data.terraform_remote_state.network.outputs.db_subnet_ids
+
+  security_group_id = data.terraform_remote_state.network.outputs.rds_sg_id
+
+  kms_key_arn = data.terraform_remote_state.kms.outputs.key_arn
+
   master_username = "postgres"
+
   instance_class = "db.t4g.medium"
 
-  allowed_cidrs = [
-    module.network.private_subnet_cidr
-  ]
+  engine_version = "17.5"
+
+  parameter_group_family = "postgres17"
+
+  allocated_storage     = 100
+  max_allocated_storage = 500
+
+  multi_az = true
 
   tags = local.common_tags
+}
+
+module "postgres_bootstrap" {
+  source = "../../modules/database/postgres_bootstrap"
+
+  endpoint = module.rds_postgres.address
+  secret_arn = module.rds_postgres.master_secret_arn
+
+  depends_on = [
+    module.rds_postgres
+  ]
 }

@@ -16,31 +16,6 @@ data "aws_iam_policy_document" "rds_monitoring_assume" {
   }
 }
 
-resource "aws_security_group" "rds" {
-  name        = "${var.name}-rds-sg"
-  description = "RDS PostgreSQL Security Group"
-  vpc_id      = var.vpc_id
-
-  tags = var.tags
-}
-
-resource "aws_vpc_security_group_ingress_rule" "postgres" {
-  for_each = toset(var.allowed_security_group_ids)
-  security_group_id = aws_security_group.rds.id
-  referenced_security_group_id = each.value
-  from_port   = 5432
-  to_port     = 5432
-  ip_protocol = "tcp"
-  description = "PostgreSQL access"
-}
-
-resource "aws_vpc_security_group_egress_rule" "all" {
-  security_group_id = aws_security_group.rds.id
-  ip_protocol = "-1"
-  cidr_ipv4 = "0.0.0.0/0"
-  description = "Allow all outbound traffic"
-}
-
 resource "aws_db_subnet_group" "this" {
   name = "${var.name}-db-subnet-group"
   subnet_ids = var.db_subnet_ids
@@ -121,7 +96,7 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name = aws_db_subnet_group.this.name
 
   vpc_security_group_ids = [
-    aws_security_group.rds.id
+    var.security_group_id
   ]
 
   multi_az = var.multi_az
@@ -132,11 +107,10 @@ resource "aws_db_instance" "this" {
   performance_insights_kms_key_id = var.kms_key_arn
   monitoring_interval = var.monitoring_interval
   monitoring_role_arn = aws_iam_role.enhanced_monitoring.arn
-
-  enabled_cloudwatch_logs_exports = [
-    "postgresql"
-  ]
-
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
+  publicly_accessible = false
+  iam_database_authentication_enabled = true
+  storage_throughput = var.storage_throughput
   deletion_protection = true
   copy_tags_to_snapshot = true
   auto_minor_version_upgrade = true

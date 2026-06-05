@@ -6,7 +6,7 @@ resource "aws_security_group" "this" {
   tags = var.tags
 }
 
-# Ingress rules
+# Ingress rules with cidr_blocks
 resource "aws_vpc_security_group_ingress_rule" "this" {
   for_each = {
     for idx, rule in local.ingress_rules_expanded :
@@ -21,6 +21,7 @@ resource "aws_vpc_security_group_ingress_rule" "this" {
   description = each.value.description
 }
 
+# Ingress rules with referenced security groups
 resource "aws_vpc_security_group_ingress_rule" "sg_rules" {
   for_each = {
     for idx, rule in flatten([
@@ -44,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "sg_rules" {
   description = each.value.description
 }
 
-# Egress rules
+# Egress rules with cidr_blocks
 resource "aws_vpc_security_group_egress_rule" "this" {
   for_each = {
     for idx, rule in local.egress_rules_expanded :
@@ -59,6 +60,7 @@ resource "aws_vpc_security_group_egress_rule" "this" {
   description = each.value.description
 }
 
+# Egress rules with referenced security groups
 resource "aws_vpc_security_group_egress_rule" "sg_rules" {
   for_each = {
     for idx, rule in flatten([

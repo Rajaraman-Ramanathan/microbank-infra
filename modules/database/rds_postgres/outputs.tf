@@ -13,3 +13,11 @@ output "security_group_id" {
 output "secret_arn" {
   value = aws_secretsmanager_secret.master.arn
 }
+
+output "address" {
+  value = aws_db_instance.this.address
+}
+
+output "db_instance_identifier" {
+  value = aws_db_instance.this.identifier
+}

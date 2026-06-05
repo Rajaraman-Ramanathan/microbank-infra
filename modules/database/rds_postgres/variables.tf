@@ -13,11 +13,6 @@ variable "db_subnet_ids" {
   type        = list(string)
 }
 
-variable "allowed_security_group_ids" {
-  description = "Security groups allowed to access PostgreSQL"
-  type        = list(string)
-}
-
 variable "kms_key_arn" {
   description = "KMS key ARN for encryption"
   type        = string
@@ -85,6 +80,23 @@ variable "ca_cert_identifier" {
   description = "RDS CA certificate"
   type        = string
   default     = "rds-ca-rsa2048-g1"
+}
+
+variable "storage_throughput" {
+  type    = number
+  default = 250
+}
+
+variable "enabled_cloudwatch_logs_exports" {
+  type = list(string)
+
+  default = [
+    "postgresql"
+  ]
+}
+
+variable "security_group_id" {
+  type = string
 }
 
 variable "tags" {
