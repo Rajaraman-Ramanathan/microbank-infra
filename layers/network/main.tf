@@ -64,7 +64,7 @@ module "vpc_endpoints" {
   vpc_id = module.vpc.vpc_id
   private_subnet_ids      = module.subnets.private_subnet_ids
   private_route_table_ids = module.route_tables.private_route_table_ids
-  private_subnet_cidrs = var.private_subnet_cidrs
+  private_subnet_cidrs = local.private_subnet_cidrs
 
   tags = local.common_tags
 }
