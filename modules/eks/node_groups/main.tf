@@ -1,12 +1,13 @@
 resource "aws_eks_node_group" "this" {
-  launch_template {
-  id      = var.launch_template_id
-  version = var.launch_template_version
-  }
-  
   for_each = var.node_groups
 
   cluster_name    = var.cluster_name
+  
+  launch_template {
+    id      = var.launch_template_id
+    version = var.launch_template_version
+  }
+
   node_group_name = each.key
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.private_subnet_ids
@@ -54,8 +55,4 @@ resource "aws_eks_node_group" "this" {
       Name = "${var.cluster_name}-${each.key}"
     }
   )
-
-  depends_on = [
-    var.node_role_arn
-  ]
 }

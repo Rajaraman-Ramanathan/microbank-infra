@@ -2,6 +2,7 @@ variable "cluster_name" {}
 variable "node_role_arn" {}
 variable "private_subnet_ids" {}
 variable "tags" {}
+
 variable "launch_template_id" {
   type = string
 }

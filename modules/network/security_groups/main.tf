@@ -9,8 +9,7 @@ resource "aws_security_group" "this" {
 # Ingress rules with cidr_blocks
 resource "aws_vpc_security_group_ingress_rule" "this" {
   for_each = {
-    for idx, rule in local.ingress_rules_expanded :
-    idx => rule
+    for idx, rule in local.ingress_rules_expanded : idx => rule
   }
 
   security_group_id = aws_security_group.this.id
@@ -24,17 +23,7 @@ resource "aws_vpc_security_group_ingress_rule" "this" {
 # Ingress rules with referenced security groups
 resource "aws_vpc_security_group_ingress_rule" "sg_rules" {
   for_each = {
-    for idx, rule in flatten([
-      for ingress_rule in var.ingress_rules : [
-        for sg in ingress_rule.source_security_group_ids : {
-          from_port   = ingress_rule.from_port
-          to_port     = ingress_rule.to_port
-          protocol    = ingress_rule.protocol
-          description = ingress_rule.description
-          sg_id       = sg
-        }
-      ]
-    ]) : idx => rule
+    for idx, rule in local.referenced_ingress_rules_expanded : idx => rule
   }
 
   security_group_id            = aws_security_group.this.id
@@ -48,8 +37,7 @@ resource "aws_vpc_security_group_ingress_rule" "sg_rules" {
 # Egress rules with cidr_blocks
 resource "aws_vpc_security_group_egress_rule" "this" {
   for_each = {
-    for idx, rule in local.egress_rules_expanded :
-    idx => rule
+    for idx, rule in local.egress_rules_expanded : idx => rule
   }
 
   security_group_id = aws_security_group.this.id
@@ -63,17 +51,7 @@ resource "aws_vpc_security_group_egress_rule" "this" {
 # Egress rules with referenced security groups
 resource "aws_vpc_security_group_egress_rule" "sg_rules" {
   for_each = {
-    for idx, rule in flatten([
-      for egress_rule in var.egress_rules : [
-        for sg in egress_rule.source_security_group_ids : {
-          from_port   = egress_rule.from_port
-          to_port     = egress_rule.to_port
-          protocol    = egress_rule.protocol
-          description = egress_rule.description
-          sg_id       = sg
-        }
-      ]
-    ]) : idx => rule
+    for idx, rule in local.referenced_egress_rules_expanded : idx => rule
   }
 
   security_group_id            = aws_security_group.this.id

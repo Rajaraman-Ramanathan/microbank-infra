@@ -43,7 +43,7 @@ module "nat" {
 }
 
 module "route_tables" {
-  source = "../../modules/network/route-tables"
+  source = "../../modules/network/route_tables"
 
   vpc_id = module.vpc.vpc_id
   igw_id = module.igw.igw_id

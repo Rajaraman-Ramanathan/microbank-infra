@@ -38,8 +38,4 @@ resource "aws_eks_cluster" "this" {
       Name = var.cluster_name
     }
   )
-
-  depends_on = [
-    var.cluster_role_arn
-  ]
 }

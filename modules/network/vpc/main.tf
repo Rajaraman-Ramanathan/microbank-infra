@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "flow_logs_permissions" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vpc/${var.name}:*"]
+    resources = ["arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vpc/${var.name}:*"]
   }
 }
 
@@ -50,14 +50,14 @@ resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
 resource "aws_iam_role" "flow_logs_role" {
   for_each = local.flow_logs_map
   name               = "${var.name}-vpc-flow-logs-role"
-  assume_role_policy = data.aws_iam_policy_document.flow_logs_assume["enabled"].json
+  assume_role_policy = data.aws_iam_policy_document.flow_logs_assume.json
   tags = var.tags
 }
 
 resource "aws_iam_policy" "flow_logs_policy" {
   for_each = local.flow_logs_map
   name   = "${var.name}-flow-logs-policy"
-  policy = data.aws_iam_policy_document.flow_logs_permissions["enabled"].json
+  policy = data.aws_iam_policy_document.flow_logs_permissions.json
 }
 
 resource "aws_iam_role_policy_attachment" "flow_logs_attach" {
