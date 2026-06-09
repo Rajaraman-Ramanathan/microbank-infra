@@ -62,6 +62,7 @@ module "vpc_endpoints" {
   name = "microbank"
   region = var.aws_region
   vpc_id = module.vpc.vpc_id
+  vpce_security_group_id = module.vpce_sg.security_group_id
   private_subnet_ids      = module.subnets.private_subnet_ids
   private_route_table_ids = module.route_tables.private_route_table_ids
   private_subnet_cidrs = local.private_subnet_cidrs
@@ -172,8 +173,8 @@ module "keycloak_sg" {
 
   ingress_rules = [
     {
-      from_port   = 8443
-      to_port     = 8443
+      from_port   = 8080
+      to_port     = 8080
       protocol    = "tcp"
 
       source_security_group_ids = [

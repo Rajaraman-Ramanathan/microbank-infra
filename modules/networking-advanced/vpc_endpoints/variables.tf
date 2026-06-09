@@ -22,6 +22,10 @@ variable "private_subnet_cidrs" {
   type = list(string)
 }
 
+variable "vpce_security_group_id" {
+  type = string
+}
+
 variable "tags" {
   type    = map(string)
   default = {}
