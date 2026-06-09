@@ -37,6 +37,26 @@ resource "aws_db_parameter_group" "this" {
     value = "1"
   }
 
+  parameter {
+    name  = "log_statement"
+    value = "ddl"
+  }
+
+  parameter {
+    name  = "log_min_duration_statement"
+    value = "1000"
+  }
+
+  parameter {
+    name  = "log_lock_waits"
+    value = "1"
+  }
+
+  parameter {
+    name  = "idle_in_transaction_session_timeout"
+    value = "60000"
+  }
+
   tags = var.tags
 }
 
@@ -101,8 +121,8 @@ resource "aws_db_instance" "this" {
 
   multi_az = var.multi_az
   backup_retention_period = var.backup_retention_period
-  backup_window = "03:00-04:00"
-  maintenance_window = "Sun:04:00-Sun:05:00"
+  backup_window = var.backup_window
+  maintenance_window = var.maintenance_window
   performance_insights_enabled = true
   performance_insights_kms_key_id = var.kms_key_arn
   monitoring_interval = var.monitoring_interval

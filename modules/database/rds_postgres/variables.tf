@@ -99,6 +99,18 @@ variable "security_group_id" {
   type = string
 }
 
+variable "backup_window" {
+  description = "Preferred backup window (UTC)"
+  type        = string
+  default     = "02:00-03:00"
+}
+
+variable "maintenance_window" {
+  description = "Preferred maintenance window (UTC)"
+  type        = string
+  default     = "sun:03:00-sun:04:00"
+}
+
 variable "tags" {
   description = "Tags"
   type        = map(string)

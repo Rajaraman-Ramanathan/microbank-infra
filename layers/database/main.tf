@@ -11,6 +11,9 @@ module "rds_postgres" {
 
   kms_key_arn = data.terraform_remote_state.kms.outputs.key_arn
 
+  backup_window = local.backup_window
+  maintenance_window = local.maintenance_window
+
   master_username = "postgres"
 
   instance_class = "db.t4g.medium"
