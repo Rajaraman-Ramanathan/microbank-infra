@@ -1,0 +1,17 @@
+---
+postgres_databases:
+
+  - database: account_db
+    username: account_user
+
+  - database: transaction_db
+    username: transaction_user
+
+  - database: notification_db
+    username: notification_user
+
+  - database: document_db
+    username: document_user
+
+  - database: keycloak_db
+    username: keycloak_user

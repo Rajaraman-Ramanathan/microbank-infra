@@ -1,0 +1,14 @@
+---
+- name: PostgreSQL Bootstrap
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - ../vars/databases.yaml
+
+  tasks:
+    - name: Display configured databases
+      ansible.builtin.debug:
+        msg: "{{ item.database }}"
+      loop: "{{ postgres_databases }}"

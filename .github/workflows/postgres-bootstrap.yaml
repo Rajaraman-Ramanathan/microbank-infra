@@ -1,0 +1,37 @@
+name: PostgreSQL Bootstrap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_BOOTSTRAP_ROLE }}
+          aws-region: ap-south-1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r bootstrap/postgres/requirements.txt
+
+      - name: Run Bootstrap
+        working-directory: bootstrap/postgres
+        env:
+          AWS_REGION: ap-south-1
+          RDS_ENDPOINT: ${{ secrets.RDS_ENDPOINT }}
+          MASTER_SECRET_ARN: ${{ secrets.RDS_MASTER_SECRET_ARN }}
+          KMS_KEY_ARN: ${{ secrets.KMS_KEY_ARN }}
+        run: |
+          python bootstrap.py
