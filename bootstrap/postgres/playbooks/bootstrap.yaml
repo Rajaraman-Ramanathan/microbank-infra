@@ -8,6 +8,10 @@
     - ../vars/databases.yaml
 
   tasks:
+    - name: Show PostgreSQL port
+      ansible.builtin.debug:
+        msg: "PostgreSQL Port = {{ postgres_port }}"
+
     - name: Display configured databases
       ansible.builtin.debug:
         msg: "{{ item.database }}"

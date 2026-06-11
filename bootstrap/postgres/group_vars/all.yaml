@@ -1,0 +1,6 @@
+---
+postgres_port: 5432
+
+postgres_ssl_mode: require
+
+secret_prefix: microbank
