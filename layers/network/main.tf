@@ -14,13 +14,13 @@ module "vpc" {
 module "subnets" {
   source = "../../modules/network/subnets"
 
-  name   = local.name
-  vpc_id = module.vpc.vpc_id
-  azs = slice(data.aws_availability_zones.available.names, 0, 2)
+  name                 = local.name
+  vpc_id               = module.vpc.vpc_id
+  azs                  = slice(data.aws_availability_zones.available.names, 0, 2)
   public_subnet_cidrs  = local.public_subnet_cidrs
   private_subnet_cidrs = local.private_subnet_cidrs
   db_subnet_cidrs      = local.db_subnet_cidrs
-  cluster_name = "${local.name}-eks"
+  cluster_name         = "${local.name}-eks"
 
   tags = local.common_tags
 }
@@ -37,7 +37,7 @@ module "nat" {
   source = "../../modules/network/nat"
 
   public_subnet_id = module.subnets.public_subnet_ids[0]
-  name = local.name
+  name             = local.name
 
   tags = local.common_tags
 }
@@ -45,13 +45,13 @@ module "nat" {
 module "route_tables" {
   source = "../../modules/network/route_tables"
 
-  vpc_id = module.vpc.vpc_id
-  igw_id = module.igw.igw_id
-  nat_id = module.nat.nat_id
+  vpc_id             = module.vpc.vpc_id
+  igw_id             = module.igw.igw_id
+  nat_id             = module.nat.nat_id
   public_subnet_ids  = module.subnets.public_subnet_ids
   private_subnet_ids = module.subnets.private_subnet_ids
   db_subnet_ids      = module.subnets.db_subnet_ids
-  name = local.name
+  name               = local.name
 
   tags = local.common_tags
 }
@@ -59,13 +59,13 @@ module "route_tables" {
 module "vpc_endpoints" {
   source = "../../modules/networking-advanced/vpc_endpoints"
 
-  name = "microbank"
-  region = var.aws_region
-  vpc_id = module.vpc.vpc_id
-  vpce_security_group_id = module.vpce_sg.security_group_id
+  name                    = "microbank"
+  region                  = var.aws_region
+  vpc_id                  = module.vpc.vpc_id
+  vpce_security_group_id  = module.vpce_sg.security_group_id
   private_subnet_ids      = module.subnets.private_subnet_ids
   private_route_table_ids = module.route_tables.private_route_table_ids
-  private_subnet_cidrs = local.private_subnet_cidrs
+  private_subnet_cidrs    = local.private_subnet_cidrs
 
   tags = local.common_tags
 }
@@ -75,26 +75,26 @@ module "eks_cluster_sg" {
 
   name        = "${local.name}-eks-cluster-sg"
   description = "EKS Control Plane Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
   ingress_rules = [
-  {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    {
+      from_port = 443
+      to_port   = 443
+      protocol  = "tcp"
 
-    source_security_group_ids = [
-      module.eks_node_sg.security_group_id
-    ]
+      source_security_group_ids = [
+        module.eks_node_sg.security_group_id
+      ]
 
-    description = "Nodes to control plane"
-  }
-]
+      description = "Nodes to control plane"
+    }
+  ]
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
       cidr_blocks = [
         "0.0.0.0/0"
       ]
@@ -115,26 +115,26 @@ module "eks_node_sg" {
 
   name        = "${local.name}-eks-node-sg"
   description = "EKS Worker Node Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
   ingress_rules = [
     {
-      from_port   = 10250
-      to_port     = 10250
-      protocol    = "tcp"
+      from_port = 10250
+      to_port   = 10250
+      protocol  = "tcp"
 
       source_security_group_ids = [
         module.eks_cluster_sg.security_group_id
       ]
-      
+
       description = "Control plane to nodes"
     }
   ]
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -169,13 +169,13 @@ module "keycloak_sg" {
 
   name        = "${local.name}-keycloak-sg"
   description = "Keycloak Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
     {
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
+      from_port = 8080
+      to_port   = 8080
+      protocol  = "tcp"
 
       source_security_group_ids = [
         module.eks_node_sg.security_group_id
@@ -187,9 +187,9 @@ module "keycloak_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -206,13 +206,13 @@ module "rds_sg" {
 
   name        = "${local.name}-rds-sg"
   description = "RDS PostgreSQL Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
     {
-      from_port   = 5432
-      to_port     = 5432
-      protocol    = "tcp"
+      from_port = 5432
+      to_port   = 5432
+      protocol  = "tcp"
 
       source_security_group_ids = [
         module.eks_node_sg.security_group_id,
@@ -225,9 +225,9 @@ module "rds_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -245,14 +245,14 @@ module "redis_sg" {
 
   name        = "${local.name}-redis-sg"
   description = "ElastiCache Redis Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
 
     {
-      from_port   = 6379
-      to_port     = 6379
-      protocol    = "tcp"
+      from_port = 6379
+      to_port   = 6379
+      protocol  = "tcp"
 
       source_security_group_ids = [
         module.eks_node_sg.security_group_id
@@ -263,9 +263,9 @@ module "redis_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -282,13 +282,13 @@ module "amazonmq_sg" {
 
   name        = "${local.name}-amazonmq-sg"
   description = "AmazonMQ RabbitMQ Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
     {
-      from_port   = 5672
-      to_port     = 5672
-      protocol    = "tcp"
+      from_port = 5672
+      to_port   = 5672
+      protocol  = "tcp"
 
       source_security_group_ids = [
         module.eks_node_sg.security_group_id
@@ -300,9 +300,9 @@ module "amazonmq_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -319,7 +319,7 @@ module "alb_public_sg" {
 
   name        = "${local.name}-alb-public-sg"
   description = "Public ALB"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
     {
@@ -348,9 +348,9 @@ module "alb_public_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
@@ -368,7 +368,7 @@ module "vpce_sg" {
 
   name        = "${local.name}-vpce-sg"
   description = "VPC Endpoint Security Group"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_rules = [
     {
@@ -387,9 +387,9 @@ module "vpce_sg" {
 
   egress_rules = [
     {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
 
       cidr_blocks = [
         "0.0.0.0/0"
