@@ -11,7 +11,3 @@ output "interface_endpoint_ids" {
     k => v.id
   }
 }
-
-output "security_group_id" {
-  value = aws_security_group.vpce.id
-}
