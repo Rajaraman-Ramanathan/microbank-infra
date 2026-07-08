@@ -1,0 +1,14 @@
+---
+- name: PostgreSQL Bootstrap
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - ../vars/databases.yaml
+
+  roles:
+    - users
+    - databases
+    - grants
+    - secrets
