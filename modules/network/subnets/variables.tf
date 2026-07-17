@@ -16,7 +16,7 @@ variable "azs" {
 # Fixed CIDR inputs (your choice)
 variable "public_subnet_cidrs" {
   description = "List of public subnet CIDRs"
-  type = list(string)
+  type        = list(string)
   validation {
     condition     = length(var.public_subnet_cidrs) == length(var.azs)
     error_message = "public subnet CIDR count must match AZ count"
@@ -25,7 +25,7 @@ variable "public_subnet_cidrs" {
 
 variable "private_subnet_cidrs" {
   description = "List of private subnet CIDRs"
-  type = list(string)
+  type        = list(string)
   validation {
     condition     = length(var.private_subnet_cidrs) == length(var.azs)
     error_message = "private subnet CIDR count must match AZ count"
@@ -34,7 +34,7 @@ variable "private_subnet_cidrs" {
 
 variable "db_subnet_cidrs" {
   description = "List of database subnet CIDRs"
-  type = list(string)
+  type        = list(string)
   validation {
     condition     = length(var.db_subnet_cidrs) == length(var.azs)
     error_message = "database subnet CIDR count must match AZ count"
@@ -43,10 +43,10 @@ variable "db_subnet_cidrs" {
 
 variable "cluster_name" {
   description = "EKS cluster name (for tagging)"
-  type = string
+  type        = string
 }
 
 variable "tags" {
   description = "Common tags"
-  type = map(string)
+  type        = map(string)
 }

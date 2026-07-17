@@ -13,11 +13,11 @@ resource "aws_vpc_security_group_ingress_rule" "this" {
   }
 
   security_group_id = aws_security_group.this.id
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  ip_protocol = each.value.protocol
-  cidr_ipv4   = each.value.cidr_block
-  description = each.value.description
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  ip_protocol       = each.value.protocol
+  cidr_ipv4         = each.value.cidr_block
+  description       = each.value.description
 }
 
 # Ingress rules with referenced security groups
@@ -28,10 +28,10 @@ resource "aws_vpc_security_group_ingress_rule" "sg_rules" {
 
   security_group_id            = aws_security_group.this.id
   referenced_security_group_id = each.value.sg_id
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  ip_protocol = each.value.protocol
-  description = each.value.description
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  ip_protocol                  = each.value.protocol
+  description                  = each.value.description
 }
 
 # Egress rules with cidr_blocks
@@ -41,11 +41,11 @@ resource "aws_vpc_security_group_egress_rule" "this" {
   }
 
   security_group_id = aws_security_group.this.id
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  ip_protocol = each.value.protocol
-  cidr_ipv4   = each.value.cidr_block
-  description = each.value.description
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  ip_protocol       = each.value.protocol
+  cidr_ipv4         = each.value.cidr_block
+  description       = each.value.description
 }
 
 # Egress rules with referenced security groups
@@ -56,8 +56,8 @@ resource "aws_vpc_security_group_egress_rule" "sg_rules" {
 
   security_group_id            = aws_security_group.this.id
   referenced_security_group_id = each.value.sg_id
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  ip_protocol = each.value.protocol
-  description = each.value.description
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  ip_protocol                  = each.value.protocol
+  description                  = each.value.description
 }
