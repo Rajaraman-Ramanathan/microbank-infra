@@ -8,7 +8,7 @@ resource "aws_eks_cluster" "this" {
 
     endpoint_private_access = var.endpoint_private_access
     endpoint_public_access  = var.endpoint_public_access
-    security_group_ids = [var.cluster_security_group_id]
+    security_group_ids      = [var.cluster_security_group_id]
   }
 
   # -----------------------------

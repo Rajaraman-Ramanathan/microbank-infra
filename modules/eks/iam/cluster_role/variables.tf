@@ -6,5 +6,5 @@ variable "tags" {
 
 variable "cluster_name" {
   description = "EKS cluster name"
-  type = string
+  type        = string
 }

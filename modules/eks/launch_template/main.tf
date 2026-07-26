@@ -1,5 +1,5 @@
 resource "aws_launch_template" "this" {
-  name_prefix = "${var.cluster_name}-nodes-"
+  name_prefix            = "${var.cluster_name}-nodes-"
   update_default_version = true
 
   vpc_security_group_ids = [
@@ -7,8 +7,8 @@ resource "aws_launch_template" "this" {
   ]
 
   metadata_options {
-    http_endpoint = "enabled"
-    http_tokens = "required"
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 2
   }
 
